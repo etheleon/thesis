@@ -3,14 +3,10 @@
 use Modern::Perl '2015';
 use experimental 'signatures';
 
-my @scg;
-my %hash;
-push @scg, $_  while <DATA>;
+my %scg;
+do{ chomp; $scg{$_}++ } while <DATA>;
 
-do{ chomp; $hash{$_}++ } for @scg;
-#say for keys %hash;
-
-say join "", "#", scalar @scg;
+say "#", scalar keys %scg;
 
 my $file = "/export2/home/uesu/KEGG/KEGG_SEPT_2014/genes/ko/ko";
 
@@ -29,7 +25,7 @@ sub scanning ($line)
         @syms = map {$_ =~ s/\s//g; $_} @syms;
         for my $sym (@syms)
         {
-            if (exists $hash{$sym})
+            if (exists $scg{$sym})
             {
                 my ($ko) = $line =~/^ENTRY\s+(K\d{5})/sm;
                 say join "\t", $ko, $sym;
@@ -40,7 +36,7 @@ sub scanning ($line)
 
 #Taken from this list
 #This is not written by XieChao but by Wesley Goi.
-#the list differs with rpoB K13798, it was not included.
+#The list generated differs with the original by XC by 1 KO: rpoB K13798 (Archaea), presumably because it was archeal
 #WG does not know why it was not included (it is found in the ko genes/ko/ko file taken from XIECHAO's folder)
 
 # List of gene symbol names were taken from this paper
