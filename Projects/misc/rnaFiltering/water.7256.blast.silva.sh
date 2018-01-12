@@ -1,0 +1,1 @@
+ls out/temp/ | perl -pe 's|.+|/apps/blast/2.2.26/bin/blastn -task blastn -db data/silva/blast/rDNA -out out/7256.blastn.silva/$& -query out/temp/$& -max_target_seqs 10 -evalue 1 -outfmt 6 -num_threads 8|'

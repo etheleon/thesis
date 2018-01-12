@@ -1,0 +1,1 @@
+ls out/new.7000.mRNA/ | perl -pe 's|(.+)\.\d.fa|./script/water.7100.uniq.pair.pl out/new.7000.mRNA/$1.1.fa out/new.7000.mRNA/$1.2.fa out/new.7100.uniq.pair/$1.1.fa out/new.7100.uniq.pair/$1.2.fa out/new.7100.uniq.pair/dup.$1.id|' | sort |uniq

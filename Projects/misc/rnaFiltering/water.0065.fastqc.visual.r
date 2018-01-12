@@ -1,0 +1,31 @@
+#!/usr/bin/env Rscript
+library(ggplot2)
+theme_set(theme_bw())
+
+overview <- read.delim('out/0060.fastqc.overview.txt')
+pdf('0065.overview.pdf')
+qplot(sample, total, data = overview, fill = gc, geom = 'bar', stat = 'identity') + coord_flip()
+dev.off()
+overview <- overview[-1 * grep('s_4_', overview$sample), ]
+pdf('0065.overview.2.pdf')
+qplot(sample, total, data = overview, fill = gc, geom = 'bar', stat = 'identity') + coord_flip()
+dev.off()
+
+quality <- read.delim('out/0060.fastqc.perbase.quality.txt')
+quality$base <- as.integer(sub('-.+', '', quality$Base))
+quality$Base <- reorder(quality$Base, quality$base)
+quality$sample <- sub('_sequence', '', quality$sample)
+pdf('0065.quality.pdf', w = 12)
+qplot(Base, Median, ymin = Lower.Quartile, ymax = Upper.Quartile, data = quality, geom = 'crossbar') + facet_wrap(~sample, ncol = 8) + opts(axis.text.x = theme_text(angle = 45, hjust = 1, vjust = 1, size = 5)) + ylab('Quality')
+dev.off()
+
+gc <- read.delim('out/0060.fastqc.gc.txt')
+gc <- ddply(gc, .(sample), transform, percent = 100 * count / sum(count))
+gc$lane <- sub('_\\d_sequence', '', gc$sample)
+gc$end <- sub('.+_(\\d)_sequence', '\\1', gc$sample)
+pdf('0065.gc.pdf')
+qplot(gc, percent, geom = 'line', data = gc, colour = lane) + facet_wrap(~end, ncol = 1)
+dev.off()
+pdf('0065.gc.2.pdf')
+qplot(gc, percent, geom = 'line', data = gc, colour = lane, xlim = c(30, 70)) + facet_wrap(~end, ncol = 1)
+dev.off()
